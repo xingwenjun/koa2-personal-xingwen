@@ -1,46 +1,27 @@
 const koa = require('koa');
 const app = new koa();
-const router = require('koa-router');
+const router = require('koa-router')();
 const bodyParser = require('koa-bodyparser');
+const controller = require('./controllers.js');
+const staticfile = require('koa-static');
+const cors = require('koa2-cors');
 
-
-app.use(async(ctx,next)=>{
-	await next();
-	ctx.response.type = 'text/html';
-	ctx.response.body = '<h1>hello,world</h1';
-})
+app.use(staticfile(__dirname+'/static'));
 app.use(bodyParser());
-
-function addMapping(router, mapping) {
-    for (var url in mapping) {
-        if (url.startsWith('GET ')) {
-            var path = url.substring(4);
-            router.get(path, mapping[url]);
-            console.log(`register URL mapping: GET ${path}`);
-        } else if (url.startsWith('POST ')) {
-            var path = url.substring(5);
-            router.post(path, mapping[url]);
-            console.log(`register URL mapping: POST ${path}`);
-        } else {
-            console.log(`invalid URL: ${url}`);
+app.use(controller());
+app.use(cors({
+    origin: function (ctx) {
+        if (ctx.url === '/test') {
+            return "*"; // 允许来自所有域名请求
         }
-    }
-}
-function addControllers(router) {
-    var files = fs.readdirSync(__dirname + '/controllers');
-    var js_files = files.filter((f) => {
-        return f.endsWith('.js');
-    });
-
-    for (var f of js_files) {
-        console.log(`process controller: ${f}...`);
-        let mapping = require(__dirname + '/controllers/' + f);
-        addMapping(router, mapping);
-    }
-}
-addControllers(router);
-
-
+        // return 'http://localhost:8080'; / 这样就能只允许 http://localhost:8080 这个域名的请求了
+    },
+    exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
+    maxAge: 5,
+    credentials: true,
+    allowMethods: ['GET', 'POST'],
+    allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
+}));
 
 app.listen(3000);
 console.log('app started at port 3000...');
