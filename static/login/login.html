@@ -28,7 +28,9 @@
 				dataType:'json',
 				type:'POST',
 				success:function(res){
-					console.log(res);
+					if(res.data.type){
+						location.href = "/index.html";
+					}
 				},
 				error:function(xhr){
 					
