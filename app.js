@@ -6,11 +6,11 @@ const controller = require('./controllers.js');
 const staticfile = require('koa-static');
 const cors = require('koa2-cors');
 
-app.use(staticfile(__dirname+'/static'));
+app.use(staticfile(__dirname + '/static'));
 app.use(bodyParser());
 app.use(controller());
 app.use(cors({
-    origin: function (ctx) {
+    origin: function(ctx) {
         if (ctx.url === '/test') {
             return "*"; // 允许来自所有域名请求
         }
@@ -22,23 +22,25 @@ app.use(cors({
     allowMethods: ['GET', 'POST'],
     allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
 }));
-const handler = async (ctx, next) => {
-try {
-    await next();
-} catch (err) {
-    console.log(err)
-    ctx.response.status = err.statusCode || err.status || 500;
-    ctx.response.body = {
-    message: err.message
-    };
-}
+const handler = async(ctx, next) => {
+    try {
+        await next();
+    } catch (err) {
+        console.log(err)
+        ctx.response.status = err.statusCode || err.status || 500;
+        ctx.throw(500);
+        ctx.response.body = {
+            message: err.message
+        };
+    }
 };
-
-const main = ctx => {
-ctx.throw(500);
-};
-
+router.get('/404', async(ctx) => {
+    ctx.redirect("/404.html")
+})
+router.get('/', async(ctx) => {
+    console.log(111111)
+})
+app.use(router.routes()).use(router.allowedMethods())
 app.use(handler);
-app.use(main);
 app.listen(3000);
 console.log('app started at port 3000...');

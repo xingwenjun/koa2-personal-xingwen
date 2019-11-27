@@ -1,18 +1,27 @@
 <!doctype html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title></title>
-		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-	</head>
-	
-	<body>
-		<button class="btn">登录</button>
-	</body>
-	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-	<script type="text/javascript">
-		$('.btn').click(function(){
-			location.href = "/login/login.html";
-		})
-	</script>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/index.css" />
+</head>
+
+<body>
+    <canvas id="index"></canvas>
+</body>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script type="text/javascript">
+    const cav = document.querySelector('#index')
+    const ctx = cav.getContext('2d')
+    let img = new Image();
+    img.crossOrigin = "Anonymous"
+    img.src = '/static/img/bg.jpg'
+    img.onload = function() {
+        ctx.drawImage(img, 0, 0, 300, 150)
+    }
+</script>
+
 </html>

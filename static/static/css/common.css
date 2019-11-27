@@ -1,0 +1,17 @@
+* {
+    margin: 0 auto;
+    padding: 0;
+    outline: none;
+}
+
+li {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+img {
+    display: block;
+}
