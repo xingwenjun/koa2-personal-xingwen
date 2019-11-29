@@ -5,7 +5,7 @@ const bodyParser = require('koa-bodyparser');
 const controller = require('./controllers.js');
 const staticfile = require('koa-static');
 const cors = require('koa2-cors');
-
+import './mysql'
 app.use(staticfile(__dirname + '/static'));
 app.use(bodyParser());
 app.use(controller());
