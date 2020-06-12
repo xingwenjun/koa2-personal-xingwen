@@ -5,14 +5,13 @@ const bodyParser = require('koa-bodyparser');
 const controller = require('./controllers.js');
 const staticfile = require('koa-static');
 const cors = require('koa2-cors');
-import './mysql'
 app.use(staticfile(__dirname + '/static'));
 app.use(bodyParser());
 app.use(controller());
 app.use(cors({
     origin: function(ctx) {
         if (ctx.url === '/test') {
-            return "*"; // 允许来自所有域名请求
+            return '*'; // 允许来自所有域名请求
         }
         // return 'http://localhost:8080'; / 这样就能只允许 http://localhost:8080 这个域名的请求了
     },
@@ -35,12 +34,12 @@ const handler = async(ctx, next) => {
     }
 };
 router.get('/404', async(ctx) => {
-    ctx.redirect("/404.html")
-})
+    ctx.redirect('/404.html');
+});
 router.get('/', async(ctx) => {
     console.log(111111)
 })
 app.use(router.routes()).use(router.allowedMethods())
 app.use(handler);
-app.listen(3000);
-console.log('app started at port 3000...');
+app.listen(3000)
+console.log('conection localhost:3000')
