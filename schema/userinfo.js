@@ -1,10 +1,10 @@
 const moment = require('moment');
 
 module.exports = (squelize, DataTypes) => {
-    return squelize.define('userinfo', {
+    return squelize.define('user', {
         id: {
             type: DataTypes.INTEGER,
-            parimaryKey: true,
+            primaryKey: true,
             allowNull: false,
             autoIncrement: true
         },
@@ -24,7 +24,7 @@ module.exports = (squelize, DataTypes) => {
             field: 'sex'
         },
         birth: {
-            type: DataTypes.TIMESTAMP,
+            type: DataTypes.INTEGER,
             allowNull: true,
             field: 'birth'
         },

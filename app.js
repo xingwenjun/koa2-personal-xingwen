@@ -33,11 +33,11 @@ const handler = async(ctx, next) => {
         };
     }
 };
-router.get('/404', async(ctx) => {
+router.get('*', async(ctx) => {
     ctx.redirect('/404.html');
 });
 router.get('/', async(ctx) => {
-    console.log(111111)
+    ctx.redirect('/login.html');
 })
 app.use(router.routes()).use(router.allowedMethods())
 app.use(handler);

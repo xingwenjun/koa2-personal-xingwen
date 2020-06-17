@@ -1,33 +1,39 @@
-const fn_signin = async(ctx, next) => {
-    let name = ctx.request.body.name || '',
-        password = ctx.request.body.password || '';
-    if (name === 'koa' && password === '12345') {
-        ctx.response.status = 200;
-    } else {
-        ctx.response.status = 400;
-    }
-    stateCode(ctx)
-};
-const register = async(ctx, next) => {
-    let name = ctx.request.body.name || '',
-        password = ctx.request.body.password || '';
-};
+const db = require('../mysql');
+const Sequelize = db.connection;
+const userinfo = Sequelize.import('../schema/userinfo.js');
 
-function stateCode(ctx) {
-    let msg = '';
-    switch (ctx.response.status) {
-        case 200:
-            msg = '请求通过'
-            break;
-        case 404:
-            msg = '接口未找到'
-            break;
-        case 500:
-            msg = '数据库错误'
-            break;
+class loginModel {
+    static login(ctx) {
+        let req = ctx.request.body
+        const userName = req.userName
+        if (userName && req.password) {
+            try {
+                const tableUser = userinfo.findOne({where: {userName: userName}});
+                console.log(tableUser)
+                ctx.response.status = 200
+                ctx.body = {
+                    code: 200,
+                    message: '登录成功',
+                    data: tableUser
+                }
+            } catch (error) {
+                ctx.response.status = 500
+                ctx.body = {
+                    code: 500,
+                    message: '登录失败',
+                    data: error
+                }
+            }
+        } else {
+            ctx.response.status = 400
+            ctx.body = {
+                code: 400,
+                message: userName? '请输入密码':'请输入账户'
+            }
+        }
     }
-    ctx.response.body = { status: ctx.response.status, data: { type: 1 }, msg: msg || '网络错误' }
 }
+
 module.exports = {
-    'POST /signin': fn_signin
+    'POST /login': loginModel.login
 }

@@ -1,6 +1,6 @@
 const db = require('../mysql');
-const sequelize = db.sequelize;
-const userinfo = sequelize.import('../sechema/userinfo');
+const Sequelize = db.connection;
+const userinfo = Sequelize.import('../schema/userinfo.js');
 userinfo.sync({force:false});
 
 class userInfoModel {
@@ -19,13 +19,13 @@ class userInfoModel {
     // 查询用户
     static async getUserInfo(id) {
         return await userinfo.findOne({
-            where: {id}
+            where: {id: id}
         });
     }
     // 删除用户
     static async deleteUserInfo(id) {
         return await userinfo.destroy({
-            where: {id}
+            where: {id: id}
         });
     }
     // 修改用户信息
