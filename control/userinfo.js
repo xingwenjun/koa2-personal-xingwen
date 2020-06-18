@@ -7,6 +7,7 @@ class userInfoController {
         if(req.userName && req.password) {
             req.createTime = moment().unix();
             req.role = 2;
+            console.log(req)
             try {
                 const ret = await userInfoModel.createUser(req);
                 ctx.response.status = 200;

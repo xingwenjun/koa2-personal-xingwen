@@ -18,6 +18,11 @@ module.exports = (squelize, DataTypes) => {
             allowNull: true,
             field: 'realname'
         },
+        idCard: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            field: 'idcard'
+        },
         sex: {
             type: DataTypes.INTEGER,
             allowNull: true,
