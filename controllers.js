@@ -1,14 +1,19 @@
 const fs = require('fs');
 
-function addMapping(router, mapping) {
+function addMapping(router, mapping) { // control文件夹下面的api遍历
     for (let url in mapping) {
         if (url.startsWith('GET ')) {
             let path = url.substring(4);
             router.get(path, mapping[url]);
         } else if (url.startsWith('POST ')) {
             let path = url.substring(5);
-			console.log(`获取post ${path}`)
             router.post(path, mapping[url]);
+        } else if (url.startsWith('DELETE ')) {
+            let path = url.substring(7);
+            router.delete(path, mapping[url]);
+        } else if (url.startsWith('PUT ')) {
+            let path = url.substring(4);
+            router.put(path, mapping[url]);
         } else {
             console.log(`invalid URL: ${url}`);
         }

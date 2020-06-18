@@ -1,6 +1,7 @@
 const db = require('../mysql');
 const Sequelize = db.connection;
 const userinfo = Sequelize.import('../schema/userinfo.js');
+const moment = require('moment');
 userinfo.sync({force:false});
 
 class userInfoModel {
@@ -9,33 +10,33 @@ class userInfoModel {
         return await userinfo.create({
             userName: data.userName,
             password: data.password,
-            realName: data.realName,
-            idCard: data.idCard,
-            sex: data.sex,
-            birth: data.birth,
+            realName: data.realName || null,
+            idcard: data.idcard || null,
+            sex: data.sex || null,
+            birth: data.birth || null,
             role: data.role,
-            createTime: data.createTime,
+            createTime: moment().unix(),
         });
     }
     // 查询用户
-    static async getUserInfo(id) {
+    static async getUser(data) {
         return await userinfo.findOne({
-            where: {id: id}
+            where: data
         });
     }
     // 删除用户
-    static async deleteUserInfo(id) {
+    static async delUser(id) {
         return await userinfo.destroy({
             where: {id: id}
         });
     }
     // 修改用户信息
-    static async updateUserInfo(data) {
+    static async updateUser(data) {
         return await userinfo.update({
             userName: data.userName,
             password: data.password,
             realName: data.realName,
-            idCard: data.idCard,
+            idcard: data.idcard,
             sex: data.sex,
             birth: data.birth,
             role: data.role,

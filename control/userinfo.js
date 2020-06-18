@@ -1,15 +1,21 @@
 const userInfoModel =  require('../modules/userinfo');
-const moment = require('moment');
 
 class userInfoController {
     static async createUser(ctx) {
         let req = ctx.request.body;
         if(req.userName && req.password) {
-            req.createTime = moment().unix();
             req.role = 2;
-            console.log(req)
             try {
-                const ret = await userInfoModel.createUser(req);
+                const tableUser = await userInfoModel.getUser({userName: req.userName});
+                if (tableUser['userName'] === req.userName) {
+                    ctx.response.status = 400
+                    ctx.body = {
+                        code: 1,
+                        message: '该账号已存在'
+                    }
+                    return
+                }
+                const data = await userInfoModel.createUser(req);
                 ctx.response.status = 200;
                 ctx.body = {
                     code: 200,
@@ -20,7 +26,7 @@ class userInfoController {
                 ctx.body = {
                     code: 500,
                     message: '注册失败',
-                    data: error
+                    data: error.original.sqlMessage
                 }
             }
         } else {
@@ -36,7 +42,7 @@ class userInfoController {
         let id = ctx.params.id;
         if (id) {
             try {
-                let data = await userInfoModel.getUserInfo(id)
+                let data = await userInfoModel.getUser(id)
                 ctx.response.status = 200;
                 ctx.body = {
                     data
@@ -63,7 +69,7 @@ class userInfoController {
         let id = ctx.params.id;
         if (id) {
             try {
-                let data = await userInfoModel.getUserInfo(id)
+                let data = await userInfoModel.delUser(id)
                 ctx.response.status = 200;
                 ctx.body = {
                     data
@@ -88,7 +94,7 @@ class userInfoController {
     static async updateUser(ctx) {
         let req = ctx.request.body;
         try {
-            const ret = await userInfoModel.createUser(req);
+            const ret = await userInfoModel.updateUser(req);
             ctx.response.status = 200;
             ctx.body = {
                 code: 200,

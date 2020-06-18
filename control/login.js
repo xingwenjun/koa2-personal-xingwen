@@ -1,20 +1,18 @@
-const db = require('../mysql');
-const Sequelize = db.connection;
-const userinfo = Sequelize.import('../schema/userinfo.js');
+const userInfoModel =  require('../modules/userinfo');
 
-class loginModel {
-    static login(ctx) {
+class loginController {
+    static async login(ctx) {
         let req = ctx.request.body
-        const userName = req.userName
-        if (userName && req.password) {
+        if (req.userName && req.password) {
             try {
-                const tableUser = userinfo.findOne({where: {userName: userName}});
-                console.log(tableUser)
-                ctx.response.status = 200
+                const tableUser = await userInfoModel.getUser({userName: req.userName});
+                const flag = (tableUser['password'] === req.password);
+                ctx.response.status = flag ? 200:400;
+                delete tableUser['password'];
                 ctx.body = {
-                    code: 200,
-                    message: '登录成功',
-                    data: tableUser
+                    code: flag ? 200:400,
+                    message: flag ? '登录成功':'账号密码有误',
+                    data: flag ? tableUser : '',
                 }
             } catch (error) {
                 ctx.response.status = 500
@@ -28,12 +26,12 @@ class loginModel {
             ctx.response.status = 400
             ctx.body = {
                 code: 400,
-                message: userName? '请输入密码':'请输入账户'
+                message: req.userName? '请输入密码':'请输入账户'
             }
         }
     }
 }
 
 module.exports = {
-    'POST /login': loginModel.login
+    'POST /login': loginController.login
 }

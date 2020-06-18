@@ -18,10 +18,10 @@ module.exports = (squelize, DataTypes) => {
             allowNull: true,
             field: 'realname'
         },
-        idCard: {
-            type: DataTypes.INTEGER,
+        idcard: {
+            type: DataTypes.BIGINT,
             allowNull: true,
-            field: 'idcard'
+            field: 'idcard',
         },
         sex: {
             type: DataTypes.INTEGER,
@@ -44,7 +44,7 @@ module.exports = (squelize, DataTypes) => {
             field: 'role'
         },
         createTime: {
-            type: DataTypes.DATE,
+            type: DataTypes.INTEGER,
             field: 'createTime',
             allowNull: false,
         },

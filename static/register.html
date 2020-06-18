@@ -26,6 +26,7 @@
         var pwd = $('.userPwd').val();
         var realName = $('.realName').val();
         var birth = $('.birth').val();
+        if (birth) birth = Date.parse(new Date(birth)) / 1000;
         var idcard = $('.idcard').val();
         $.ajax({
             url: '/user',
@@ -40,7 +41,7 @@
             type: 'POST',
             success: function(res) {
                 if (res.data) {
-                    // location.href = "/index.html";
+                    // location.href = "/login.html";
                 }
             },
             error: function(xhr) {
