@@ -11,12 +11,12 @@ module.exports = (squelize, DataTypes) => {
         userName: {
             type: DataTypes.STRING,
             allowNull: false,
-            field: 'username'
+            field: 'userName'
         },
         realName: {
             type: DataTypes.STRING,
             allowNull: true,
-            field: 'realname'
+            field: 'realName'
         },
         idcard: {
             type: DataTypes.BIGINT,

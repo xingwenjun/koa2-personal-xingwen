@@ -7,7 +7,7 @@ class userInfoController {
             req.role = 2;
             try {
                 const tableUser = await userInfoModel.getUser({userName: req.userName});
-                if (tableUser['userName'] === req.userName) {
+                if (tableUser && tableUser['userName'] === req.userName) {
                     ctx.response.status = 400
                     ctx.body = {
                         code: 1,
@@ -19,6 +19,7 @@ class userInfoController {
                 ctx.response.status = 200;
                 ctx.body = {
                     code: 200,
+                    data: true,
                     message: '注册成功'
                 }
             } catch (error) {
