@@ -6,13 +6,11 @@ class loginController {
         if (req.userName && req.password) {
             try {
                 const tableUser = await userInfoModel.getUser({userName: req.userName});
-                const flag = (tableUser['password'] === req.password);
+                const flag = tableUser && (tableUser['password'] === req.password) || false;
                 ctx.response.status = flag ? 200:400;
-                delete tableUser['password'];
                 ctx.body = {
                     code: flag ? 200:400,
-                    message: flag ? '登录成功':'账号密码有误',
-                    data: flag ? tableUser : '',
+                    message: flag ? '登录成功':'账号密码有误'
                 }
             } catch (error) {
                 ctx.response.status = 500
