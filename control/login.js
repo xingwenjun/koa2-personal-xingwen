@@ -7,10 +7,16 @@ class loginController {
             try {
                 const tableUser = await userInfoModel.getUser({userName: req.userName});
                 const flag = tableUser && (tableUser['password'] === req.password) || false;
-                ctx.response.status = flag ? 200:400;
+                ctx.response.status = 200;
                 ctx.body = {
-                    code: flag ? 200:400,
-                    message: flag ? '登录成功':'账号密码有误'
+                    code: flag ? 200:10001,
+                    message: flag ? '登录成功':'账号或密码有误'
+                }
+                if(ctx.response.status === 200) {
+                    ctx.session.login = {
+                        userInfo: req.userName,
+                        password: req.password
+                    }
                 }
             } catch (error) {
                 ctx.response.status = 500
@@ -23,7 +29,7 @@ class loginController {
         } else {
             ctx.response.status = 400
             ctx.body = {
-                code: 400,
+                code: 10002,
                 message: req.userName? '请输入密码':'请输入账户'
             }
         }

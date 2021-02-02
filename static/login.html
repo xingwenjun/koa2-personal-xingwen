@@ -12,6 +12,7 @@
     <p><span>用户名:</span><input class="userName" type="text" /></p>
     <p><span>密码:</span><input class="userPwd" type="password" /></p>
     <button class="btn login">登录</button><button class="btn reg">注册</button>
+    <button class="btn try">测试</button>
 </body>
 <script src="./static/js/jquery.js"></script>
 <script type="text/javascript">
@@ -20,6 +21,14 @@
     })
     $('.btn.reg').click(function() {
         location.href='/register.html';
+    })
+    $('.btn.try').click(function() {
+        $.ajax({
+            url: '/try',
+            success: function(res) {
+                console.log(res)
+            }
+        })
     })
     function login() {
         var user = $('.userName').val();

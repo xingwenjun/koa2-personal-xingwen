@@ -8,9 +8,9 @@ class userInfoController {
             try {
                 const tableUser = await userInfoModel.getUser({userName: req.userName});
                 if (tableUser && tableUser['userName'] === req.userName) {
-                    ctx.response.status = 400
+                    ctx.response.status = 200
                     ctx.body = {
-                        code: 1,
+                        code: 10003,
                         message: '该账号已存在'
                     }
                     return
