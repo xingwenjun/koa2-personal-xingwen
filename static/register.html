@@ -29,7 +29,7 @@
         if (birth) birth = Date.parse(new Date(birth)) / 1000;
         var idcard = $('.idcard').val();
         $.ajax({
-            url: '/user',
+            url: '/api/user',
             data: {
                 userName: user,
                 password: pwd,
