@@ -12,7 +12,7 @@ class loginController {
                     code: flag ? 200:10001,
                     message: flag ? '登录成功':'账号或密码有误'
                 }
-                if(ctx.response.status === 200) {
+                if(ctx.response.status === 200 && flag) {
                     ctx.session.login = {
                         userInfo: req.userName,
                         password: req.password

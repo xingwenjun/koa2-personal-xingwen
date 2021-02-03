@@ -38,16 +38,20 @@ app.use(cors({
     allowMethods: ['GET', 'POST'],
     allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
 }));
+const localfilter = ['/login', '/api/login']
 const handler = async (ctx, next) => {
+    console.log(1111,ctx.session.login)
     try {
         if(ctx.session.login) {
-            console.log(1111111111)
+            await next();
+        } else if(localfilter.includes(ctx.originalUrl)) {
             await next();
         } else {
             ctx.body = {
                 code: 10000,
                 message: '账号未登录'
             }
+            ctx.redirect('index.html')
         }
     } catch (err) {
         console.log(err)
@@ -58,7 +62,7 @@ const handler = async (ctx, next) => {
         };
     }
 };
-app.use(router.routes()).use(router.allowedMethods())
 app.use(handler);
-app.listen(3000)
-console.log('conection localhost:3000')
+app.use(router.routes()).use(router.allowedMethods())
+app.listen(80)
+console.log('conection localhost:80')
