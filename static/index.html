@@ -6,64 +6,51 @@
     <title></title>
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
     <link rel="stylesheet" href="/static/css/common.css" />
-    <link rel="stylesheet" href="/static/css/index.css" />
 </head>
 
 <body>
-    <button onclick="location.href='/login.html'">回到登录</button>
-    <canvas id="index"></canvas>
+    <p><span>用户名:</span><input class="userName" type="text" /></p>
+    <p><span>密码:</span><input class="userPwd" type="password" /></p>
+    <button class="btn login">登录</button><button class="btn reg">注册</button>
+    <button class="btn try">测试</button>
 </body>
 <script src="./static/js/jquery.js"></script>
 <script type="text/javascript">
-    const cav = document.querySelector('#index')
-    const ctx = cav.getContext('2d')
-    let line = [],
-        balls = [],
-        windowWidth = window.innerWidth,
-        windowHeight = window.innerHeight;
-    cav.width = windowWidth;
-    cav.height = windowHeight;
-    let raf;
-    let ball = {
-        x: 100,
-        y: 100,
-        vx: 5,
-        vy: 2,
-        radius: 25,
-        color: 'rgb(255,138,25)',
-        draw: function() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
-            ctx.closePath();
-            ctx.fillStyle = this.color;
-            ctx.fill();
-        }
-    };
+    $('.btn.login').click(function() {
+        login();
+    })
+    $('.btn.reg').click(function() {
+        location.href='/register.html';
+    })
+    $('.btn.try').click(function() {
+        $.ajax({
+            url: '/try',
+            success: function(res) {
+                console.log(res)
+            }
+        })
+    })
+    function login() {
+        var user = $('.userName').val();
+        var pwd = $('.userPwd').val();
+        $.ajax({
+            url: '/login',
+            data: {
+                userName: user,
+                password: pwd
+            },
+            dataType: 'json',
+            type: 'POST',
+            success: function(res) {
+                if (res.data) {
+                    location.href = "/index.html";
+                }
+            },
+            error: function(xhr) {
 
-    function draw() {
-        ctx.clearRect(0, 0, windowWidth, windowHeight);
-        ball.draw();
-        if (ball.y + ball.vy > windowHeight || ball.y + ball.vy < 0) {
-            ball.vy = -ball.vy;
-        } else {
-            ball.y += ball.vy;
-        }
-        if (ball.x + ball.vx > windowWidth || ball.x + ball.vx < 0) {
-            ball.vx = -ball.vx;
-        } else {
-            ball.x += ball.vx;
-        }
-        raf = window.requestAnimationFrame(draw);
+            }
+        })
     }
-    cav.addEventListener('mouseover', function(e) {
-        raf = window.requestAnimationFrame(draw);
-    });
-
-    cav.addEventListener('mouseout', function(e) {
-        window.cancelAnimationFrame(raf);
-    });
-
-    ball.draw();
 </script>
 
 </html>

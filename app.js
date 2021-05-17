@@ -64,5 +64,5 @@ const handler = async (ctx, next) => {
 };
 app.use(handler);
 app.use(router.routes()).use(router.allowedMethods())
-app.listen(7777)
+app.listen(80)
 console.log('conection localhost:80')
