@@ -37,5 +37,5 @@ class loginController {
 }
 
 module.exports = {
-    'POST /login': loginController.login
+    'POST /api/login': loginController.login
 }

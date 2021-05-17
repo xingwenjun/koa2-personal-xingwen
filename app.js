@@ -6,7 +6,17 @@ const koa_session = require('koa-session');
 const controller = require('./controllers.js');
 const staticfile = require('koa-static');
 const cors = require('koa2-cors');
-
+app.use(cors({
+    origin: function (ctx) {
+        return '*'; // 允许来自所有域名请求
+        // return 'http://localhost:8080'; / 这样就能只允许 http://localhost:8080 这个域名的请求了
+    },
+    exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
+    maxAge: 5,
+    credentials: true,
+    allowMethods: ['GET', 'POST'],
+    allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
+}));
 const session_signed_key = ['login secret']
 const session_config = { 
     key: 'token', /** cookie的key。 (默认是 koa:sess) */ 
@@ -18,40 +28,18 @@ const session_config = {
     rolling: true, /** 是否每次响应时刷新Session的有效期。(默认是 false) */ 
     renew: false, /** 是否在Session快过期时刷新Session的有效期。(默认是 false) */ 
 };
-const session = koa_session(session_config, app)
-app.keys = session_signed_key
-
-app.use(session)
-app.use(staticfile(__dirname + '/static'));
-app.use(bodyParser());
-app.use(controller());
-app.use(cors({
-    origin: function (ctx) {
-        if (ctx.url === '/test') {
-            return '*'; // 允许来自所有域名请求
-        }
-        // return 'http://localhost:8080'; / 这样就能只允许 http://localhost:8080 这个域名的请求了
-    },
-    exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
-    maxAge: 5,
-    credentials: true,
-    allowMethods: ['GET', 'POST'],
-    allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
-}));
-const localfilter = ['/login', '/api/login']
+const localfilter = ['POST /api/login', 'POST /api/user']
 const handler = async (ctx, next) => {
-    console.log(1111,ctx.session.login)
     try {
         if(ctx.session.login) {
             await next();
-        } else if(localfilter.includes(ctx.originalUrl)) {
+        } else if(localfilter.includes(`POST ${ctx.originalUrl}`)) {
             await next();
         } else {
             ctx.body = {
                 code: 10000,
                 message: '账号未登录'
             }
-            ctx.redirect('index.html')
         }
     } catch (err) {
         console.log(err)
@@ -62,7 +50,14 @@ const handler = async (ctx, next) => {
         };
     }
 };
+const session = koa_session(session_config, app)
+app.keys = session_signed_key
+app.use(session)
+app.use(staticfile(__dirname + '/static'));
+app.use(bodyParser());
 app.use(handler);
-app.use(router.routes()).use(router.allowedMethods())
-app.listen(80)
-console.log('conection localhost:80')
+app.use(controller());
+
+app.use(router.routes()).use(router.allowedMethods());
+app.listen(3000)
+console.log('conection localhost:3000')

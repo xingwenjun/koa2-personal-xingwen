@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <title></title>
+    <link rel="shortcut icon" href="/static/static/img/1234.jpg" type="image/x-icon" />
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
     <link rel="stylesheet" href="/static/css/common.css" />
 </head>
@@ -11,37 +12,39 @@
 <body>
     <p><span>用户名:</span><input class="userName" type="text" /></p>
     <p><span>密码:</span><input class="userPwd" type="password" /></p>
-    <p><span>真实姓名:</span><input class="realName" type="text" /></p>
-    <p><span>生日:</span><input class="birth" type="date" /></p>
-    <p><span>身份证号:</span><input class="idcard" type="text" /></p>
-    <button class="btn reg">注册</button>
+    <button class="btn login">登录</button><button class="btn reg">注册</button>
+    <button class="btn try">测试</button>
 </body>
 <script src="./static/js/jquery.js"></script>
 <script type="text/javascript">
-    $('.btn.reg').click(function(){
-        reg();
+    $('.btn.login').click(function() {
+        login();
     })
-    function reg() {
+    $('.btn.reg').click(function() {
+        location.href='/register.html';
+    })
+    $('.btn.try').click(function() {
+        $.ajax({
+            url: '/api/try',
+            success: function(res) {
+                console.log(res)
+            }
+        })
+    })
+    function login() {
         var user = $('.userName').val();
         var pwd = $('.userPwd').val();
-        var realName = $('.realName').val();
-        var birth = $('.birth').val();
-        if (birth) birth = Date.parse(new Date(birth)) / 1000;
-        var idcard = $('.idcard').val();
         $.ajax({
-            url: '/api/user',
+            url: '/api/login',
             data: {
                 userName: user,
-                password: pwd,
-                realName: realName,
-                birth: birth,
-                idcard: idcard
+                password: pwd
             },
             dataType: 'json',
             type: 'POST',
             success: function(res) {
                 if (res.data) {
-                    location.href = "/login.html";
+                    // location.href = "/index.html";
                 }
             },
             error: function(xhr) {

@@ -113,8 +113,8 @@ class userInfoController {
 }
 
 module.exports= {
-    'POST /user': userInfoController.createUser,
-    'GET /user': userInfoController.findUser,
-    'PUT /user': userInfoController.updateUser,
-    'DELETE /user': userInfoController.delUser
+    'POST /api/user': userInfoController.createUser,
+    'GET /api/user': userInfoController.findUser,
+    'PUT /api/user': userInfoController.updateUser,
+    'DELETE /api/user': userInfoController.delUser
 }

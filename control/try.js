@@ -18,5 +18,5 @@ class tryController {
 }
 
 module.exports = {
-    'GET /try': tryController.try
+    'GET /api/try': tryController.try
 }
