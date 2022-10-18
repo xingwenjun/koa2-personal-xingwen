@@ -7,6 +7,8 @@
 		<style>
 			body{
 				background-color: rgba(26, 26, 26, 1);
+				padding: 0;
+				margin: 0;
 			}
 			#content{
 				height: 300px;
@@ -48,7 +50,7 @@
 			#list{
 				padding: 400px 0;
 				margin-top: 280px;
-				padding-left: 15px;
+				padding-left: 12px;
 				background-color: rgba(26, 26, 26, 1);
 			}
 		</style>
@@ -64,19 +66,7 @@
 <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script>
 	let touxiang = "./img/tou.png"
-document.getElementById("content").value = `大一开学典礼，我在台下偷偷看东方青苍。
-
-有人问我名字。
-
-我脱口而出：
-
-「将死之人，也配问本座的名讳？」
-
-话音刚落，四周安静了。
-
-我猛地抬头，
-
-正对上学生会会长黎泽那张阴云密布的帅脸。`
+document.getElementById("content").value = ``
 document.getElementById("btn").addEventListener("click",function(){
 	let text = document.getElementById("content").value
 	const arr = text.split('\n\n')
