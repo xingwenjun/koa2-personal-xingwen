@@ -1,56 +1,161 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title></title>
-    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-    <link rel="stylesheet" href="/static/css/common.css" />
+		<style>
+			body{
+				background-color: rgba(26, 26, 26, 1);
+			}
+			#content{
+				height: 300px;
+				width: 100%;
+			}
+			.chat-line{
+				display: flex;
+				margin-top: 23px;
+			}
+			.avatar{
+				width: 40px;
+				height: 40px;
+				border-radius: 8px;
+			}
+			.word{
+				position: relative;
+				max-width: 240px;
+				background-color: rgba(45, 45, 45, 1);
+				border-radius: 6px;
+				padding: 10px 10px;
+				font-size: 16px;
+				color: #fff;
+				margin-left: 10px;
+				flex-shrink: 0;
+				font-family: "思源黑体";
+			}
+			.word::after{
+				position: absolute;
+				content: ' ';
+				width: 0;
+				height: 0;
+				border-top: 6px solid transparent;
+				border-right: 6px solid rgba(45, 45, 45, 1);
+				border-bottom: 6px solid transparent;
+				left: 0px;
+				transform: translate(-100%,-50%);
+				top: 18px;
+			}
+			#list{
+				padding: 400px 0;
+				margin-top: 280px;
+				padding-left: 15px;
+				background-color: rgba(26, 26, 26, 1);
+			}
+		</style>
 </head>
-
 <body>
-    <p><span>用户名:</span><input class="userName" type="text" /></p>
-    <p><span>密码:</span><input class="userPwd" type="password" /></p>
-    <button class="btn login">登录</button><button class="btn reg">注册</button>
-    <button class="btn try">测试</button>
+	<textarea id="content"></textarea>
+	<button id="btn">转换</button>
+	<input type="file" id="touxiang" />
+	<button id="image">导出图片</button>
+	<div id="list"></div>
 </body>
-<script src="./static/js/jquery.js"></script>
-<script type="text/javascript">
-    $('.btn.login').click(function() {
-        login();
-    })
-    $('.btn.reg').click(function() {
-        location.href='/register.html';
-    })
-    $('.btn.try').click(function() {
-        $.ajax({
-            url: '/try',
-            success: function(res) {
-                console.log(res)
-            }
-        })
-    })
-    function login() {
-        var user = $('.userName').val();
-        var pwd = $('.userPwd').val();
-        $.ajax({
-            url: '/login',
-            data: {
-                userName: user,
-                password: pwd
-            },
-            dataType: 'json',
-            type: 'POST',
-            success: function(res) {
-                if (res.data) {
-                    location.href = "/index.html";
-                }
-            },
-            error: function(xhr) {
+<script src="./js/image.js"></script>
+<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script>
+	let touxiang = "./img/tou.png"
+document.getElementById("content").value = `大一开学典礼，我在台下偷偷看东方青苍。
 
-            }
-        })
-    }
+有人问我名字。
+
+我脱口而出：
+
+「将死之人，也配问本座的名讳？」
+
+话音刚落，四周安静了。
+
+我猛地抬头，
+
+正对上学生会会长黎泽那张阴云密布的帅脸。`
+document.getElementById("btn").addEventListener("click",function(){
+	let text = document.getElementById("content").value
+	const arr = text.split('\n\n')
+	const dom = document.getElementById('list')
+	dom.innerHTML=""
+	for(let i=0;arr.length>i;i++) {
+		dom.innerHTML+=`<div class="chat-line">
+			<img class="avatar" src="${touxiang}" alt="">
+			<span class="word">${arr[i]}</span>
+		</div>`
+	}
+})
+document.getElementById("touxiang").addEventListener("change",function(){
+	const f = this.files[0]
+	const fr = new FileReader()
+	fr.readAsDataURL(f)
+	fr.onload = function(e) {
+		touxiang = this.result
+		document.querySelectorAll(".avatar").src=touxiang
+		const list = document.querySelectorAll(".avatar")
+		if(list.length>0) {
+			list.forEach(item=>{
+				item.src=touxiang
+			})
+		}
+	}
+})
+function scroll() {
+	const dom = document.body
+	const sh = dom.scrollHeight
+	const ch=document.body.clientHeight
+	const lh = document.getElementById("list").offsetHeight
+	let height = 0
+	
+}
+function animation() {
+	document.documentElement.scrollTop=height
+	height++
+	if(ch+height >= sh-lh) {
+		clearInterval(time)
+	}
+}
+function DownLoadDomImg(el) {
+	if(!el) return
+    html2canvas(el, {
+	// 页面高度
+	height: el.height,
+	// 页面宽度
+	width: el.width,
+	onrendered: function(canvas) {
+		var mA = document.createElement("a");
+		mA.href = canvas.toDataURL()
+		mA.setAttribute('download', 'download.png');
+		mA.click();
+　　　　　　　　　// 如果是ie浏览器 则需要 使用ie浏览器的下载方法 进行下载 一会补充
+	}
+    });
+}
+document.getElementById("image").onclick=function() {
+	html2canvas(document.getElementById("list"),{
+		    x: 0, // x坐标
+		    y: 0, // y坐标
+		    foreignObjectRendering: true, // 是否在浏览器支持的情况下使用ForeignObject渲染
+		    useCORS: true, // 是否尝试使用CORS从服务器加载图像
+		    async: false, // 是否异步解析和呈现元素
+		    // 以下字段必填
+		    background: "#ffffff", // 一定要添加背景颜色，否则出来的图片，背景全部都是透明的
+		    scale: 2, // 处理模糊问题
+		    dpi: 300, // 处理模糊问题
+		onrendered:function(canvas){
+			const url = canvas.toDataURL("image/png")
+			let a = document.createElement('a')
+			        a.download = '转化图片.jpg' // 设置下载的文件名，默认是'下载'
+			        a.href = url
+			        document.body.appendChild(a)
+			        a.click()
+			        a.remove() // 下载之后把创建的元素删除
+		}
+	})
+}
 </script>
-
 </html>
