@@ -9,6 +9,10 @@
 				background-color: rgba(26, 26, 26, 1);
 				padding: 0;
 				margin: 0;
+				padding-bottom: 300px;
+			}
+			*{
+				box-sizing: border-box;
 			}
 			#content{
 				height: 300px;
@@ -47,26 +51,84 @@
 				transform: translate(-100%,-50%);
 				top: 18px;
 			}
+			button{
+				border: 0;
+				width: 100%;
+				height: 40px;
+				font-size: 16px;
+				margin-bottom: 20px;
+				background-color: #f7ad4d;
+				color: #fff;
+				font-weight: bold;
+			}
+			#touxiang-box{
+				position: relative;
+				width: 100%;
+				height: 40px;
+				font-size: 16px;
+				margin-bottom: 20px;
+				background-color: #f7ad4d;
+				color: #fff;
+				font-weight: bold;
+				text-align: center;
+				line-height: 40px;
+			}
+			#touxiang{
+				width: 100%;
+				margin-bottom: 20px;
+				background-color: #fff;
+				position: absolute;
+				left: 0;
+				top: 0;
+				opacity: 0;
+			}
+			#scroll-box{
+				margin-top: 200px;
+				height: 400px;
+				position: relative;
+			}
 			#list{
-				padding: 400px 0;
-				margin-top: 280px;
 				padding-left: 12px;
 				background-color: rgba(26, 26, 26, 1);
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
 			}
 		</style>
 </head>
 <body>
-	<textarea id="content"></textarea>
-	<button id="btn">转换</button>
-	<input type="file" id="touxiang" />
+	<textarea id="content" placeholder="根据换行分段"></textarea>
+	<button id="btn">生成聊天</button>
+	<div id="touxiang-box">
+		<span>上传头像</span>
+		<input type="file" id="touxiang" />
+	</div>
 	<button id="image">导出图片</button>
-	<div id="list"></div>
+	<input id="distance" placeholder="每次滚动距离设置" />
+	<input id="time" placeholder="滚动间隔时间，单位毫秒" />
+	<button id="scroll">点击滚动</button>
+	<div id="scroll-box">
+		<div id="list"></div>
+	</div>
 </body>
 <script src="./js/image.js"></script>
 <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script>
 	let touxiang = "./img/tou.png"
 document.getElementById("content").value = ``
+
+let distance = document.getElementById("distance")
+distance.value = 150
+let scroll = distance.value
+let flag = false
+let height = 0
+let dom = document.getElementById("scroll-box")
+let sDom = ''
+let lh = ''
+let ch = ''
+
+
 document.getElementById("btn").addEventListener("click",function(){
 	let text = document.getElementById("content").value
 	const arr = text.split('\n\n')
@@ -78,6 +140,7 @@ document.getElementById("btn").addEventListener("click",function(){
 			<span class="word">${arr[i]}</span>
 		</div>`
 	}
+	reset()
 })
 document.getElementById("touxiang").addEventListener("change",function(){
 	const f = this.files[0]
@@ -94,20 +157,45 @@ document.getElementById("touxiang").addEventListener("change",function(){
 		}
 	}
 })
-function scroll() {
-	const dom = document.body
-	const sh = dom.scrollHeight
-	const ch=document.body.clientHeight
-	const lh = document.getElementById("list").offsetHeight
-	let height = 0
-	
+function reset() {
+	dom.style.overflow = "unset"
+	sDom.style.top='0px'
+	height = 0
+	scroll = distance.value
+	flag = false
+}
+document.getElementById("scroll").addEventListener("click", function() {
+	if(flag == true) return
+	flag = true
+	dom = document.getElementById("scroll-box")
+	sDom = document.getElementById("list")
+	lh = document.getElementById("list").offsetHeight
+	ch = dom.clientHeight
+	reset()
+	scrollAnimation()
+})
+function scrollAnimation() {
+	dom.style.overflow = "hidden"
+	document.documentElement.scrollTop = 600
+	animation()
 }
 function animation() {
-	document.documentElement.scrollTop=height
-	height++
-	if(ch+height >= sh-lh) {
-		clearInterval(time)
+	if((ch-height) >= (lh-height/2)) {
+		flag = false
+		return
 	}
+	if(scroll <= 0) {
+		scroll = distance.value
+		setTimeout(function(){
+			window.requestAnimationFrame(animation)
+		},document.getElementById("time").value || 1000)
+		return
+	}
+	sDom.style.top=height+'px'
+	height--
+	scroll--
+	
+	window.requestAnimationFrame(animation)
 }
 function DownLoadDomImg(el) {
 	if(!el) return
