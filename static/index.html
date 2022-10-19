@@ -107,6 +107,7 @@
 	<button id="image">导出图片</button>
 	<input id="distance" placeholder="每次滚动距离设置" />
 	<input id="time" placeholder="滚动间隔时间，单位毫秒" />
+	<input id="ping" placeholder="滚动速度，默认1" />
 	<button id="scroll">点击滚动</button>
 	<div id="scroll-box">
 		<div id="list"></div>
@@ -116,7 +117,19 @@
 <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script>
 	let touxiang = "./img/tou.png"
-document.getElementById("content").value = ``
+document.getElementById("content").value = `大一开学典礼，我在台下偷偷看东方青苍。
+
+有人问我名字。
+
+我脱口而出：
+
+「将死之人，也配问本座的名讳？」
+
+话音刚落，四周安静了。
+
+我猛地抬头，
+
+正对上学生会会长黎泽那张阴云密布的帅脸。`
 
 let distance = document.getElementById("distance")
 distance.value = 150
@@ -128,6 +141,7 @@ let sDom = ''
 let lh = ''
 let ch = ''
 let cli = false
+let ping = 1
 
 document.getElementById("btn").addEventListener("click",function(){
 	if(cli) return
@@ -177,6 +191,7 @@ document.getElementById("scroll").addEventListener("click", function() {
 	sDom = document.getElementById("list")
 	lh = document.getElementById("list").offsetHeight
 	ch = dom.clientHeight
+	ping = document.getElementById("ping").value || 1
 	reset()
 	scrollAnimation()
 })
@@ -198,8 +213,8 @@ function animation() {
 		return
 	}
 	sDom.style.top=height+'px'
-	height--
-	scroll--
+	height-=ping
+	scroll-=ping
 	
 	window.requestAnimationFrame(animation)
 }
