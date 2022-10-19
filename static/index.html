@@ -104,7 +104,6 @@
 		<span>上传头像</span>
 		<input type="file" id="touxiang" />
 	</div>
-	<button id="image">导出图片</button>
 	<input id="distance" placeholder="每次滚动距离设置" />
 	<input id="time" placeholder="滚动间隔时间，单位毫秒" />
 	<input id="ping" placeholder="滚动速度，默认1" />
@@ -114,7 +113,7 @@
 	</div>
 </body>
 <script src="./js/image.js"></script>
-<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="./js/video.js"></script>
 <script>
 	let touxiang = "./img/tou.png"
 document.getElementById("content").value = `大一开学典礼，我在台下偷偷看东方青苍。
@@ -131,18 +130,19 @@ document.getElementById("content").value = `大一开学典礼，我在台下偷
 
 正对上学生会会长黎泽那张阴云密布的帅脸。`
 
-let distance = document.getElementById("distance")
+var distance = document.getElementById("distance")
 distance.value = 150
-let scroll = distance.value
-let flag = false
-let height = 0
-let dom = document.getElementById("scroll-box")
-let sDom = ''
-let lh = ''
-let ch = ''
-let cli = false
-let ping = 1
-
+var scroll = distance.value
+var flag = false
+var height = 0
+var dom = document.getElementById("scroll-box")
+var sDom = ''
+var lh = ''
+var ch = ''
+var cli = false
+var ping = 1
+let luping = new videoControl()
+luping.init("scroll")
 document.getElementById("btn").addEventListener("click",function(){
 	if(cli) return
 	cli = true
@@ -160,6 +160,7 @@ document.getElementById("btn").addEventListener("click",function(){
 		</div>`
 	}
 	dom.innerHTML= html
+	flag = false
 	reset()
 })
 document.getElementById("touxiang").addEventListener("change",function(){
@@ -182,26 +183,28 @@ function reset() {
 	sDom.style.top='0px'
 	height = 0
 	scroll = distance.value
-	flag = false
 }
 document.getElementById("scroll").addEventListener("click", function() {
-	if(flag == true) return
-	flag = true
-	dom = document.getElementById("scroll-box")
-	sDom = document.getElementById("list")
-	lh = document.getElementById("list").offsetHeight
-	ch = dom.clientHeight
-	ping = document.getElementById("ping").value || 1
-	reset()
-	scrollAnimation()
+	if(!flag) {
+		flag = true
+		dom = document.getElementById("scroll-box")
+		sDom = document.getElementById("list")
+		lh = document.getElementById("list").offsetHeight
+		ch = dom.clientHeight
+		ping = document.getElementById("ping").value || 1
+		reset()
+		scrollAnimation()
+	} 
 })
 function scrollAnimation() {
+	luping.start()
 	dom.style.overflow = "hidden"
 	document.documentElement.scrollTop = 600
 	animation()
 }
 function animation() {
-	if((ch-height) >= (lh-height/2)) {
+	if((ch-height) >= (lh+120)) {
+		luping.stop()
 		flag = false
 		return
 	}
@@ -217,44 +220,6 @@ function animation() {
 	scroll-=ping
 	
 	window.requestAnimationFrame(animation)
-}
-function DownLoadDomImg(el) {
-	if(!el) return
-    html2canvas(el, {
-	// 页面高度
-	height: el.height,
-	// 页面宽度
-	width: el.width,
-	onrendered: function(canvas) {
-		var mA = document.createElement("a");
-		mA.href = canvas.toDataURL()
-		mA.setAttribute('download', 'download.png');
-		mA.click();
-　　　　　　　　　// 如果是ie浏览器 则需要 使用ie浏览器的下载方法 进行下载 一会补充
-	}
-    });
-}
-document.getElementById("image").onclick=function() {
-	html2canvas(document.getElementById("list"),{
-		    x: 0, // x坐标
-		    y: 0, // y坐标
-		    foreignObjectRendering: true, // 是否在浏览器支持的情况下使用ForeignObject渲染
-		    useCORS: true, // 是否尝试使用CORS从服务器加载图像
-		    async: false, // 是否异步解析和呈现元素
-		    // 以下字段必填
-		    background: "#ffffff", // 一定要添加背景颜色，否则出来的图片，背景全部都是透明的
-		    scale: 2, // 处理模糊问题
-		    dpi: 300, // 处理模糊问题
-		onrendered:function(canvas){
-			const url = canvas.toDataURL("image/png")
-			let a = document.createElement('a')
-			        a.download = '转化图片.jpg' // 设置下载的文件名，默认是'下载'
-			        a.href = url
-			        document.body.appendChild(a)
-			        a.click()
-			        a.remove() // 下载之后把创建的元素删除
-		}
-	})
 }
 </script>
 </html>
