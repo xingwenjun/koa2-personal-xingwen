@@ -127,19 +127,25 @@ let dom = document.getElementById("scroll-box")
 let sDom = ''
 let lh = ''
 let ch = ''
-
+let cli = false
 
 document.getElementById("btn").addEventListener("click",function(){
+	if(cli) return
+	cli = true
+	setTimeout(function(){
+		cli = false
+	},3000)
 	let text = document.getElementById("content").value
 	const arr = text.split('\n\n')
 	const dom = document.getElementById('list')
-	dom.innerHTML=""
+	let html =""
 	for(let i=0;arr.length>i;i++) {
-		dom.innerHTML+=`<div class="chat-line">
+		html+=`<div class="chat-line">
 			<img class="avatar" src="${touxiang}" alt="">
 			<span class="word">${arr[i]}</span>
 		</div>`
 	}
+	dom.innerHTML= html
 	reset()
 })
 document.getElementById("touxiang").addEventListener("change",function(){
